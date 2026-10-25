@@ -81,7 +81,7 @@ commit, so the portal can tell which deployment is live.
 
 ## Requirements
 
-Next.js 14+ (App Router or Pages Router), Node 18+. The agent widget itself is
-`@faustine-ai/web-agent`.
+Next.js 14+ (App Router or Pages Router), React 18+. The agent widget itself
+is `@faustine-ai/web-agent`.
 
 MIT.
