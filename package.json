@@ -1,0 +1,45 @@
+{
+  "name": "@faustine-ai/next",
+  "version": "0.1.5",
+  "description": "The Faustine adapter for Next.js — a generated registry of Server Actions and data functions, a three-line route handler, the <FaustineAgent/> component, and the faustine-next generator.",
+  "keywords": ["faustine", "nextjs", "server-actions", "agent", "assistant", "ai"],
+  "license": "MIT",
+  "homepage": "https://faustine.ai",
+  "repository": { "type": "git", "url": "git+https://github.com/faustine-ai/next.git" },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" },
+    "./client": { "types": "./dist/client.d.ts", "import": "./dist/client.js", "require": "./dist/client.cjs" }
+  },
+  "bin": { "faustine-next": "./dist/bin/faustine-next.js" },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "peerDependencies": {
+    "@faustine-ai/web-agent": ">=0.2.0",
+    "next": ">=14",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@faustine-ai/web-agent": { "optional": true },
+    "react": { "optional": true }
+  },
+  "devDependencies": {
+    "@faustine-ai/web-agent": "^0.2.4",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "esbuild": "^0.28.0",
+    "react": "^19.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
