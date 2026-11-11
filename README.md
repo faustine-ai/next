@@ -81,7 +81,9 @@ commit, so the portal can tell which deployment is live.
 
 ## Requirements
 
-Next.js 14+ (App Router or Pages Router), React 18+. The agent widget itself
+Next.js 14+ and React 18+. `<FaustineAgent>` and `faustineIdentityToken` work
+with the App Router and the Pages Router. The adapter (`faustine-next`, the
+registry and the route handler) needs the App Router. The agent widget itself
 is `@faustine-ai/web-agent`.
 
 MIT.
