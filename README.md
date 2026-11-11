@@ -13,6 +13,8 @@ Most teams never write the code below by hand: the portal's *Install the
 assistant* card gives a one-line command for your coding agent
 (`npx skills add faustine-ai/skills`, then `/install-faustine …`).
 
+Documentation: [docs.faustine.ai/packages/next](https://docs.faustine.ai/packages/next/) · [reference](https://docs.faustine.ai/reference/next-package/)
+
 ## Mount the agent
 
 ```tsx
