@@ -170,6 +170,8 @@ describe('faustine-next init', () => {
       const { fetchImpl } = fakeApi();
       await expect(runInit({ cwd: fresh, dryRun: true, yes: true, interactive: false, source: 'init', fetchImpl })).rejects.toThrow(/--web-agent/);
       await expect(runInit({ cwd: fresh, webAgent: 'wa_nope', dryRun: true, yes: true, interactive: false, source: 'init', fetchImpl })).rejects.toThrow(/wa_nope/);
+      // A machine without the token exits 2: CI tells it from a registry out of step (1).
+      await expect(runInit({ cwd: fresh, webAgent: 'wa_nope', dryRun: true, yes: true, interactive: false, source: 'init', fetchImpl })).rejects.toMatchObject({ exitCode: 2, code: 'no_adapter_token' });
       const r = await runInit({ cwd: fresh, webAgent: 'wa_e2e', dryRun: true, yes: true, interactive: false, source: 'init', fetchImpl });
       expect(r.webAgent).toBe('wa_e2e');
       expect(r.files.every((f) => f.action === 'create')).toBe(true);

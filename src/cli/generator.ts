@@ -1,3 +1,4 @@
+import { usageError } from './internal/errors';
 import { readFile, stat } from 'node:fs/promises';
 import { dirname, join, posix, relative } from 'node:path';
 import { isOperationName, normalizeParams, registryHash, REGISTRY_FORMAT_VERSION, type OperationParam } from '../registry';
@@ -39,7 +40,7 @@ async function exists(p: string): Promise<boolean> {
 export async function readLayout(root: string): Promise<AppLayout> {
   const src = await exists(join(root, 'src', 'app'));
   if (!src && !(await exists(join(root, 'app')))) {
-    throw new Error('No `app/` or `src/app/` directory here — faustine-next supports the Next.js App Router. Run it from the Next.js project root.');
+    throw usageError('No `app/` or `src/app/` directory here — faustine-next supports the Next.js App Router. Run it from the Next.js project root.');
   }
   const srcRoot = src ? 'src' : '';
   let alias: string | null = null;

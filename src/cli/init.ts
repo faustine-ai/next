@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { AdapterClient, DEFAULT_API_BASE, type SurfaceOperation } from './internal/client';
 import { findCredentialBySetupCode, hashSetupCode, listAdapterCredentials, loadAdapterCredential, saveAdapterCredential, type AdapterCredential } from './internal/config';
-import { usageError } from './internal/errors';
+import { usageError, authError } from './internal/errors';
 import {
   bindableOperations,
   planHash,
@@ -64,6 +64,9 @@ async function readIfExists(path: string): Promise<string | null> {
  * may repeat the same code); a setup code exchanged now; `--web-agent`; the
  * registry's Web Agent; the only stored one.
  */
+/** This machine holds no token for the Web Agent: exit 2, apart from a usage error or a registry that is out of step (1). */
+const noTokenError = (message: string) => authError(message, 'no_adapter_token');
+
 async function resolveCredential(opts: InitOptions, layout: AppLayout): Promise<{ cred: AdapterCredential; file: string | null }> {
   const apiBase = (opts.api ?? process.env.FAUSTINE_API ?? DEFAULT_API_BASE).replace(/\/$/, '');
   if (opts.setup) {
@@ -79,18 +82,18 @@ async function resolveCredential(opts: InitOptions, layout: AppLayout): Promise<
   if (opts.webAgent) {
     const cred = await loadAdapterCredential(opts.webAgent.trim());
     if (cred) return { cred, file: null };
-    throw usageError(`No adapter token for Web Agent ${opts.webAgent} on this machine — run \`faustine-next init --setup <code>\` with a code from its portal page.`);
+    throw noTokenError(`No adapter token for Web Agent ${opts.webAgent} on this machine — run \`faustine-next init --setup <code>\` with a code from its portal page.`);
   }
   const existing = await readIfExists(join(opts.cwd, layout.registryFile));
   const fromRegistry = existing ? webAgentOfRegistry(existing) : null;
   if (fromRegistry) {
     const cred = await loadAdapterCredential(fromRegistry);
     if (cred) return { cred, file: null };
-    throw usageError(`The registry binds Web Agent ${fromRegistry} but this machine has no adapter token for it — run \`faustine-next init --setup <code>\` with a new code from the portal.`);
+    throw noTokenError(`The registry binds Web Agent ${fromRegistry} but this machine has no adapter token for it — run \`faustine-next init --setup <code>\` with a new code from the portal.`);
   }
   const all = await listAdapterCredentials();
   if (all.length === 1) return { cred: all[0], file: null };
-  if (all.length === 0) throw usageError('No setup code and no stored adapter token — copy the code from the portal (Add the Faustine adapter) and run `faustine-next init --setup <code>`.');
+  if (all.length === 0) throw noTokenError('No setup code and no stored adapter token — copy the code from the portal (Add the Faustine adapter) and run `faustine-next init --setup <code>`.');
   throw usageError(`Several adapter tokens are stored (${all.map((c) => c.webAgent).join(', ')}) and there is no registry yet — pass --web-agent <id> to pick one, or repeat the --setup <code> you used (it reuses the token).`);
 }
 
